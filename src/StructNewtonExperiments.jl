@@ -36,15 +36,15 @@ const osext_point = [
     (key = :x, getvalue = get_pointrepr),
     (key = :M, getvalue = s -> s.M)
 ]
-const NUMEXPS_OUTDIR = joinpath(dirname(pathof(StructNewtonExperiments)), "..", "numexps_output")
+const NUMEXPS_OUTDIR_DEFAULT = joinpath(dirname(pathof(StructNewtonExperiments)), "..", "numexps_output")
 
 function __init__()
-    !isdir(NUMEXPS_OUTDIR) && mkdir(NUMEXPS_OUTDIR)
+    !isdir(NUMEXPS_OUTDIR_DEFAULT) && mkdir(NUMEXPS_OUTDIR_DEFAULT)
     return
 end
 
 
-function process_expe_data(optimdata, pbname, M_opt, F_opt)
+function process_expe_data(optimdata, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
     println("Building table...")
     build_table(optimdata, pbname, [1e-3, 1e-9], M_opt = M_opt, F_opt = F_opt)
 
@@ -78,11 +78,24 @@ function process_expe_data(optimdata, pbname, M_opt, F_opt)
 end
 
 
+include("experiments/expe_logistic.jl")
+include("experiments/expe_maxquad.jl")
+include("experiments/expe_tracenorm.jl")
+
+function run_expes(;NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
+    run_expe_logistic(NUMEXPS_OUTDIR = NUMEXPS_OUTDIR);
+    run_expe_maxquad(NUMEXPS_OUTDIR = NUMEXPS_OUTDIR);
+    run_expe_tracenorm(NUMEXPS_OUTDIR = NUMEXPS_OUTDIR);
+    return nothing
+end
 
 export osext, osext_point
 export process_expe_data
 export NUMEXPS_OUTDIR
 export run_algorithms
 export plot_iterates
+
+export run_expe_logistic, run_expe_maxquad, run_expe_tracenorm
+export run_expes
 
 end # module
