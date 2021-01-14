@@ -49,7 +49,7 @@ function build_table(optimdata, pbname, subopt_levels; M_opt = nothing, F_opt = 
     end
 
     ### Write table to file
-    open("numexps_output/$(pbname).csv", "w") do io
+    open(joinpath(NUMEXPS_OUTDIR, "$(pbname).csv"), "w") do io
         return writedlm(io, table_lines, "&")
     end
 
