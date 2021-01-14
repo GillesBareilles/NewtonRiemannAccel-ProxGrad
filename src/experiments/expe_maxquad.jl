@@ -50,7 +50,7 @@ function run_expe_maxquad(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
 
     # plot iterates
     fig = plot_iterates(pb, optimizer_to_trace)
-    pgfsave(joinpath(NUMEXPS_OUTDIR, "$pbname-iterates.tex"), fig, include_preamble=false)
+    PGFPlotsX.savetex(joinpath(NUMEXPS_OUTDIR, "$pbname-iterates.tex"), fig, include_preamble=false)
     try
         pgfsave(joinpath(NUMEXPS_OUTDIR, "$pbname-iterates.pdf"), fig)
     catch

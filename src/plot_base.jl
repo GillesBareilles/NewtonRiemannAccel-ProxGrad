@@ -81,7 +81,7 @@ function plot_curves(
         push!(plotdata, @pgf HLine({ dashed, black }, hlevel))
     end
 
-    return @pgf Axis(
+    return TikzDocument(@pgf Axis(
         {
             xmode = xmode,
             ymode = ymode,
@@ -96,5 +96,5 @@ function plot_curves(
             xmin = 0,
         },
         plotdata...,
-    )
+    ))
 end

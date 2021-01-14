@@ -68,7 +68,7 @@ function process_expe_data(optimdata, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
     # PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname).pdf"), fig)
 
     ## Build individual figures
-    PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time.tex"), plot_subopt_time(optimdata, subopt_levels=[1e-3, 1e-9]), include_preamble=false)
+    PGFPlotsX.savetex(joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time.tex"), plot_subopt_time(optimdata, subopt_levels=[1e-3, 1e-9]), include_preamble=false)
     try
         PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time.pdf"), plot_subopt_time(optimdata, subopt_levels=[1e-3, 1e-9]), include_preamble=false)
     catch
@@ -78,7 +78,7 @@ function process_expe_data(optimdata, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
     # PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-relsubopt-time.tex"), plot_relsubopt_time(optimdata), include_preamble=false)
     # PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-relsubopt-time.pdf"), plot_relsubopt_time(optimdata), include_preamble=false)
 
-    PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration.tex"), plot_structure_iteration(optimdata, M_opt), include_preamble=false)
+    PGFPlotsX.savetex(joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration.tex"), plot_structure_iteration(optimdata, M_opt), include_preamble=false)
     try
         PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration.pdf"), plot_structure_iteration(optimdata, M_opt), include_preamble=false)
     catch

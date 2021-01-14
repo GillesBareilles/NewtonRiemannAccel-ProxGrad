@@ -26,8 +26,6 @@ run_expe_logistic(NUMEXPS_OUTDIR = ".");
 run_expe_tracenorm(NUMEXPS_OUTDIR = ".");
 
 # running all problems
+run_expes(NUMEXPS_OUTDIR = ".");
 ```
-
-
-<!-- Alternatively, the numerical experiments may be run near automatically using docker as follows: -->
 

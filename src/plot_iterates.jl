@@ -65,5 +65,5 @@ function plot_iterates(pb, optimizer_to_trace::AbstractDict{Optimizer,Any})
     coords = [(x, x^2) for x in xs]
     add_manifold!(axis, coords)
 
-    return axis
+    return TikzDocument(axis)
 end
