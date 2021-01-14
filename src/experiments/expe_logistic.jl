@@ -36,7 +36,7 @@ function run_expe_logistic(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
     ### Run numerical experiments, or recover logged data
     #
     # if !isfile(joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))
-    optimdata = run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext, CG_maxiter=50)
+    optimdata = run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext, NUMEXPS_OUTDIR, CG_maxiter=50)
     # end
 
     println("Opening trace logs file: ", joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))

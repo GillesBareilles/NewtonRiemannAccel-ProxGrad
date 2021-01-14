@@ -1,4 +1,4 @@
-function run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext; CG_maxiter=100)
+function run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext, NUMEXPS_OUTDIR; CG_maxiter=100)
     optparams_precomp = OptimizerParams(iterations_limit = 4, time_limit = 1, show_trace=false)
 
     #

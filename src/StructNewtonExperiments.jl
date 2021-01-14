@@ -9,6 +9,8 @@ using LaTeXStrings
 using DataStructures
 using DelimitedFiles
 using JLD2
+using Random
+using Distributions
 
 using Contour
 
@@ -46,7 +48,7 @@ end
 
 function process_expe_data(optimdata, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
     println("Building table...")
-    build_table(optimdata, pbname, [1e-3, 1e-9], M_opt = M_opt, F_opt = F_opt)
+    build_table(optimdata, pbname, [1e-3, 1e-9], M_opt = M_opt, F_opt = F_opt, NUMEXPS_OUTDIR=NUMEXPS_OUTDIR)
 
     ### Build TikzAxis and final plotting object
     println("Building figures...")
