@@ -57,5 +57,5 @@ function run_expe_maxquad(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
         @warn "Could not build $(joinpath(NUMEXPS_OUTDIR, "$pbname-iterates.pdf"))"
     end
 
-    return fig
+    return nothing
 end

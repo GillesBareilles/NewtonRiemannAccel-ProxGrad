@@ -10,10 +10,11 @@ This project contains the code used to produce the numerical result of the paper
 The numerical experiments may be run as follows:
 - first add the three above packages by running
 ```julia
-pkg> add https://github.com/GillesBareilles/StructuredProximalOperators.jl
-pkg> add https://github.com/GillesBareilles/CompositeProblems.jl
-pkg> add https://github.com/GillesBareilles/StructuredSolvers.jl
-pkg> add https://github.com/GillesBareilles/NewtonRiemannAccel-ProxGrad
+using Pkg
+Pkg.add(url="https://github.com/GillesBareilles/StructuredProximalOperators.jl", rev="v0.1")
+Pkg.add(url="https://github.com/GillesBareilles/CompositeProblems.jl", rev="v0.1")
+Pkg.add(url="https://github.com/GillesBareilles/StructuredSolvers.jl", rev="v0.1")
+Pkg.add(url="https://github.com/GillesBareilles/NewtonRiemannAccel-ProxGrad", rev="v0.1")
 ```
 
 - then by running the following commands:
@@ -29,3 +30,18 @@ run_expe_tracenorm(NUMEXPS_OUTDIR = ".");
 run_expes(NUMEXPS_OUTDIR = ".");
 ```
 
+
+Alternatively, the numerical experiments may be run using docker as follows:
+1. First, build the julia image and install packages: run from a folder containing the `Dockerfile`
+```bash
+sudo docker build -t julia_structnewton .
+```
+2. Then run the docker image by executing the following command, where /ABSOLUTE/PATH/TO/OUTDIR is the absolute path to the directory where the numerical experiments files will be written:
+```bash
+docker run --mount type=bind,source=/ABSOLUTE/PATH/TO/OUTDIR,target=/root/numexps_output -it julia_structnewton
+```
+3. In the opened julia REPL, run the following
+```julia
+using StructNewtonExperiments
+run_expes(NUMEXPS_OUTDIR="/root/numexps_output/")
+```

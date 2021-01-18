@@ -47,5 +47,5 @@ function run_expe_tracenorm(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
     #
     fig = process_expe_data(optimdata, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
 
-    return fig
+    return nothing
 end

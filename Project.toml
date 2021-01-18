@@ -18,3 +18,8 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 StructuredProximalOperators = "622438d8-7036-4667-80f6-bb5000de1630"
 StructuredSolvers = "d9bbf7bc-fdaa-4477-a432-ffa81b30db87"
+
+[compat]
+StructuredProximalOperators = "0.1"
+CompositeProblems = "0.1"
+StructuredSolvers = "0.1"
