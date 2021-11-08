@@ -5,7 +5,9 @@ This project contains the code used to produce the numerical result of the paper
 - [`CompositeProblems.jl`](https://github.com/GillesBareilles/CompositeProblems.jl) implements some additive composite problems, and provide oracles for the smooth and nonsmooth part;
 - [`StructuredSover.jl`](https://github.com/GillesBareilles/StructuredSolvers.jl) implements solvers designed to tackle composite problems, such as the (Accelerated) Proximal Gradient, or the methods of the above mentioned paper.
 
-### Running numerical experiments
+## Running numerical experiments
+
+### 1. Directly
 
 The numerical experiments may be run as follows:
 - first add the three above packages by running
@@ -30,7 +32,7 @@ run_expe_tracenorm(NUMEXPS_OUTDIR = ".");
 run_expes(NUMEXPS_OUTDIR = ".");
 ```
 
-
+### 2. On a docker image
 Alternatively, the numerical experiments may be run using docker as follows:
 1. First, build the julia image and install packages: run from a folder containing the `Dockerfile`
 ```bash
