@@ -1,16 +1,18 @@
 
-function run_expe_tracenorm(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
+function run_expe_tracenorm(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT, runalgs = true)
     n1, n2, m, sparsity = 10, 12, 60, 0.8
     pb = get_tracenorm_MLE(n1 = n1, n2 = n2, m = m, sparsity = sparsity)
     pbname = "tracenorm-$(n1)x$(n2)"
 
-    optparams_PG = OptimizerParams(iterations_limit = 1e13, trace_length = 1e3, time_limit = 8)
-    optparams_Newton = OptimizerParams(iterations_limit = 1e3, trace_length = 1e3, time_limit = 8)
+    time_limit = 8
+
+    optparams_PG = OptimizerParams(iterations_limit = 1e13, trace_length = 1e3; time_limit)
+    optparams_Newton = OptimizerParams(iterations_limit = 1e3, trace_length = 1e3; time_limit)
 
     Random.seed!(1234)
     x0 = rand(Normal(), n1, n2)
     optimizer = ProximalGradient(extrapolation=AcceleratedProxGrad())
-    trace = optimize!(pb, optimizer, x0, optparams =  OptimizerParams(iterations_limit = 1e3, time_limit = 0.5), optimstate_extensions = osext_point)
+    trace = optimize!(pb, optimizer, x0, optparams =  OptimizerParams(iterations_limit = 1e3, time_limit = Inf), optimstate_extensions = osext_point)
 
     x0 = last(trace).additionalinfo.x
     M0 = last(trace).additionalinfo.M
@@ -35,9 +37,9 @@ function run_expe_tracenorm(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
     #
     ### Run numerical experiments, or recover logged data
     #
-    # if !isfile(joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))
-    optimdata = run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext, NUMEXPS_OUTDIR; CG_maxiter=150)
-    # end
+    if runalgs || !isfile(joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))
+        optimdata = run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext, NUMEXPS_OUTDIR; CG_maxiter=150)
+    end
 
     println("Opening trace logs file: ", joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))
     @load joinpath(NUMEXPS_OUTDIR, "$pbname.jld") optimdata M_opt F_opt
@@ -49,3 +51,4 @@ function run_expe_tracenorm(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
 
     return nothing
 end
+

@@ -46,7 +46,9 @@ function run_expe_maxquad(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
     #
     ### Build numerical exps data
     #
-    fig = process_expe_data(optimizer_to_trace, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
+    # fig = process_expe_data(optimizer_to_trace, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
+    println("Building table...")
+    build_table(optimizer_to_trace, pbname, [1e-3, 1e-9], M_opt = M_opt, F_opt = F_opt, NUMEXPS_OUTDIR=NUMEXPS_OUTDIR)
 
     # plot iterates
     fig = plot_iterates(pb, optimizer_to_trace)

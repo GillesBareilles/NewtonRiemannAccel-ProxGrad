@@ -5,6 +5,8 @@ function run_expe_logistic(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
     pb = get_logit_MLE_elastic_net(n=n, m=m, λ = 0.01, lambda2 = 0.0)
     pbname = "logit-$(n)x$(m)-elasticnet"
 
+    if !isfile(joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))
+
     optparams_PG = OptimizerParams(iterations_limit = 1e5, time_limit = 15, trace_length=1e5)
     optparams_Newton = OptimizerParams(iterations_limit = 1e5, time_limit = 15, trace_length=1e5)
 
@@ -35,9 +37,8 @@ function run_expe_logistic(; NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
     #
     ### Run numerical experiments, or recover logged data
     #
-    # if !isfile(joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))
-    optimdata = run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext, NUMEXPS_OUTDIR, CG_maxiter=50)
-    # end
+        optimdata = run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F_opt, osext, NUMEXPS_OUTDIR, CG_maxiter=50)
+    end
 
     println("Opening trace logs file: ", joinpath(NUMEXPS_OUTDIR, "$pbname.jld"))
     @load joinpath(NUMEXPS_OUTDIR, "$pbname.jld") optimdata M_opt F_opt

@@ -1,6 +1,7 @@
 #
 ### Algorithm names
 #
+# get_legendname(optimizer) = dispname(optimizer)
 
 dispname(o::ProximalGradient{StructuredSolvers.VanillaProxGrad}) = "Proximal Gradient"
 dispname(o::ProximalGradient{StructuredSolvers.AcceleratedProxGrad}) = "Accel. Proximal Gradient"

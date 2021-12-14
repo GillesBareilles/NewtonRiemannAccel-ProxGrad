@@ -79,12 +79,7 @@ function run_algorithms(pbname, pb, x0, optparams_PG, optparams_Newton, M_opt, F
     # optimdata[optimizer] = trace
 
     println("Writing data...")
-    data = Dict(
-        "optimdata" => optimdata,
-        "M_opt" => M_opt,
-        "F_opt" => F_opt
-    )
     @save joinpath(NUMEXPS_OUTDIR, "$pbname.jld") optimdata M_opt F_opt
-    # save(joinpath(NUMEXPS_OUTDIR, "$pbname.jld"), data)
+    println("Done.")
     return optimdata, M_opt, F_opt
 end

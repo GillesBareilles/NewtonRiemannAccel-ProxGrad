@@ -14,30 +14,29 @@ using Distributions
 
 using Contour
 
+using PlotsOptim
+import PlotsOptim.get_legendname
+
 include("getters.jl")
 include("table.jl")
 
-include("plot_base.jl")
-include("plot_utils.jl")
-include("plot_highlevel.jl")
+# include("plot_base.jl")
+# include("plot_utils.jl")
+# include("plot_highlevel.jl")
 include("plot_iterates.jl")
 include("algorithms.jl")
 
 const osext = [
-    # (key = :x, getvalue = s -> s.x),
     (key = :M, getvalue = s -> s.M)
 ]
 
-# function get_pointrepr(s)
-#     # @show s
-#     return StructuredSolvers.get_repr(s.x)
-# end
 get_pointrepr(s) = deepcopy(StructuredSolvers.get_repr(s.x))
-
 const osext_point = [
     (key = :x, getvalue = get_pointrepr),
     (key = :M, getvalue = s -> s.M)
 ]
+
+
 const NUMEXPS_OUTDIR_DEFAULT = joinpath(dirname(pathof(StructNewtonExperiments)), "..", "numexps_output")
 
 function __init__()
@@ -45,6 +44,28 @@ function __init__()
     return
 end
 
+
+
+get_legendname(o::ProximalGradient{StructuredSolvers.VanillaProxGrad}) = "Proximal Gradient"
+get_legendname(o::ProximalGradient{StructuredSolvers.AcceleratedProxGrad}) = "Accel. Proximal Gradient"
+function get_legendname(
+    ::PartlySmoothOptimizer{
+        AlternatingUpdateSelector,
+        WholespaceProximalGradient,
+        ManTruncatedNewton{StructuredSolvers.TruncatedNewton},
+    },
+    )
+    return "Alt. Truncated Newton"
+end
+function get_legendname(
+    ::PartlySmoothOptimizer{
+        AlternatingUpdateSelector,
+        WholespaceProximalGradient,
+        ManTruncatedNewton{StructuredSolvers.Newton},
+    },
+    )
+    return "Alt. Newton"
+end
 
 function process_expe_data(optimdata, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
     println("Building table...")
@@ -68,22 +89,66 @@ function process_expe_data(optimdata, pbname, M_opt, F_opt, NUMEXPS_OUTDIR)
     # PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname).pdf"), fig)
 
     ## Build individual figures
-    PGFPlotsX.savetex(joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time.tex"), plot_subopt_time(optimdata, subopt_levels=[1e-3, 1e-9]), include_preamble=false)
-    try
-        PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time.pdf"), plot_subopt_time(optimdata, subopt_levels=[1e-3, 1e-9]), include_preamble=false)
-    catch
-        @warn "Could not build $(joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time.pdf"))"
-    end
+    optimizer_to_trace = optimdata
 
-    # PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-relsubopt-time.tex"), plot_relsubopt_time(optimdata), include_preamble=false)
-    # PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-relsubopt-time.pdf"), plot_relsubopt_time(optimdata), include_preamble=false)
+    # Time to suboptimality
+    get_time(obj, trace) = [os.time for os in trace]
+    get_subopt(obj, trace) = [os.f_x + os.g_x - F_opt for os in trace]
 
-    PGFPlotsX.savetex(joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration.tex"), plot_structure_iteration(optimdata, M_opt), include_preamble=false)
-    try
-        PGFPlotsX.pgfsave(joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration.pdf"), plot_structure_iteration(optimdata, M_opt), include_preamble=false)
-    catch
-        @warn "Could not build $(joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration.pdf"))"
-    end
+    # fig = plot_curves(optimdata,
+    #                   get_time,
+    #                   get_subopt,
+    #                   horizontallines = [1e-3, 1e-9],
+    #                   xlabel = "time (s)",
+    #                   ylabel = L"$F(x_k)-F(x^\star)$",
+    #                   nmarks = 20,
+    #                   simplifylines = false
+    #                   )
+    # savefig(TikzDocument(fig), joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time-extensive"))
+
+    fig = plot_curves(optimdata,
+                      get_time,
+                      get_subopt,
+                      horizontallines = [1e-3, 1e-9],
+                      xlabel = "time (s)",
+                      ylabel = L"$F(x_k)-F(x^\star)$",
+                      nmarks = 0,
+                      simplifylines = true,
+                      simplificationfactor = 1e-2,
+                      includelegend = false
+                      )
+    savefig(TikzDocument(fig), joinpath(NUMEXPS_OUTDIR, "$(pbname)-subopt-time"))
+
+    ## Iteration to manifold dimension
+    get_iteration(obj, trace) = [Float64(os.it) for os in trace]
+    get_mandim(obj, trace) = [manifold_dimension(os.additionalinfo.M) for os in trace]
+
+    # fig = plot_curves(optimdata,
+    #                   get_iteration,
+    #                   get_mandim,
+    #                   xlabel = "iterations",
+    #                   ylabel = latexstring("dim(\$M_k\$)"),
+    #                   xmode = "log",
+    #                   ymode = "normal",
+    #                   nmarks = 0,
+    #                   simplifylines = false
+    #                   )
+    # savefig(TikzDocument(fig), joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration-extensive"))
+
+    fig = plot_curves(optimdata,
+                      get_iteration,
+                      get_mandim,
+                      xlabel = "iterations",
+                      ylabel = latexstring("dim(\$M_k\$)"),
+                      xmode = "log",
+                      ymode = "normal",
+                      nmarks = 0,
+                      simplifylines = true,
+                      simplificationfactor = 1e-2,
+                      includelegend = false
+                      )
+
+    savefig(TikzDocument(fig), joinpath(NUMEXPS_OUTDIR, "$(pbname)-structure-iteration"))
     return fig
 end
 
@@ -91,11 +156,13 @@ end
 include("experiments/expe_logistic.jl")
 include("experiments/expe_maxquad.jl")
 include("experiments/expe_tracenorm.jl")
+include("experiments/expe_tracenorm_perfprofile.jl")
 
 function run_expes(;NUMEXPS_OUTDIR = NUMEXPS_OUTDIR_DEFAULT)
     run_expe_logistic(NUMEXPS_OUTDIR = NUMEXPS_OUTDIR);
     run_expe_maxquad(NUMEXPS_OUTDIR = NUMEXPS_OUTDIR);
     run_expe_tracenorm(NUMEXPS_OUTDIR = NUMEXPS_OUTDIR);
+    run_tracenorm_perfprof(NUMEXPS_OUTDIR = NUMEXPS_OUTDIR);
     return nothing
 end
 
@@ -105,7 +172,7 @@ export NUMEXPS_OUTDIR
 export run_algorithms
 export plot_iterates
 
-export run_expe_logistic, run_expe_maxquad, run_expe_tracenorm
+export run_expe_logistic, run_expe_maxquad, run_expe_tracenorm, run_tracenorm_perfprof
 export run_expes
 
 end # module
