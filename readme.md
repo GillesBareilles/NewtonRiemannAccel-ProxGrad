@@ -17,6 +17,7 @@ Pkg.add(url="https://github.com/GillesBareilles/StructuredProximalOperators.jl",
 Pkg.add(url="https://github.com/GillesBareilles/CompositeProblems.jl", rev="v0.1")
 Pkg.add(url="https://github.com/GillesBareilles/StructuredSolvers.jl", rev="v0.1")
 Pkg.add(url="https://github.com/GillesBareilles/NewtonRiemannAccel-ProxGrad", rev="v0.1")
+Pkg.add(url="https://github.com/GillesBareilles/PlotsOptim", rev="v0.1")
 ```
 
 - then by running the following commands:
@@ -27,6 +28,7 @@ using StructNewtonExperiments
 run_expe_maxquad(NUMEXPS_OUTDIR = ".");
 run_expe_logistic(NUMEXPS_OUTDIR = ".");
 run_expe_tracenorm(NUMEXPS_OUTDIR = ".");
+run_tracenorm_perfpro(NUMEXPS_OUTDIR = ".");
 
 # running all problems
 run_expes(NUMEXPS_OUTDIR = ".");
